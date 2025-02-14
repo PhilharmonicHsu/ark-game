@@ -31,9 +31,8 @@ type Animal = {
 
 export default function Game() {
     const [animals, setAnimals] = useState<Animal[]>([]);
-    const orbitControlsRef = useRef<any>(null);
+    const orbitControlsRef = useRef(null);
     const [gameOver, setGameOver] = useState<boolean>(false)
-    const [isAnimalRemoved, setIsAnimalRemoved] = useState<boolean>(false)
     const [virtualAnimalPosition, setVirtualAnimalPosition] = useState<[number, number, number] | null>(null);
     const [showVirtualAnimal, setShowVirtualAnimal] = useState(false);
 
@@ -86,7 +85,7 @@ export default function Game() {
                   <Floor />
                   <Ark 
                     setGameOver={setGameOver} 
-                    isAnimalRemoved={isAnimalRemoved} 
+                    gameOver={gameOver} 
                   />
                   {animals.map((animal) => (
                     <Animal

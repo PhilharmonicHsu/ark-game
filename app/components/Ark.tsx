@@ -5,10 +5,10 @@ import * as THREE from "three";
 export default function Ark(
   {
     setGameOver, 
-    isAnimalRemoved
+    gameOver
   }: {
     setGameOver: (value: boolean) => void; 
-    isAnimalRemoved: boolean;
+    gameOver: boolean;
   }
 ) {
   const [rotation, setRotation] = useState<[number, number, number]>([0, 0, 0]);
@@ -28,7 +28,7 @@ export default function Ark(
       if (Math.abs(v[0]) > 2) api.angularVelocity.set(2 * Math.sign(v[0]), v[1], v[2]);
       if (Math.abs(v[2]) > 2) api.angularVelocity.set(v[0], v[1], 2 * Math.sign(v[2]));
     });
-  }, []);
+  }, [api.angularVelocity]);
 
   const [supportRef] = useBox<THREE.Mesh>(() => ({
     type: "Static",
@@ -39,7 +39,7 @@ export default function Ark(
   useEffect(() => {
     // ✅ 確保方舟在初始化時角度為 0
     api.rotation.set(0, 0, 0);
-  }, []);
+  }, [api.rotation]);
 
   // 讓方舟與支架形成晃動的連結
   useHingeConstraint(ref, supportRef, {
@@ -73,14 +73,14 @@ export default function Ark(
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [api.quaternion, setGameOver]);
 
   // 當動物被移除時，給方舟一個「回正的力」
   useEffect(() => {
-    if (isAnimalRemoved) {
+    if (gameOver) {
       api.applyTorque([rotation[0] * -0.2, 0, rotation[1] * -0.2]); // 給予回正的扭力
     }
-  }, [isAnimalRemoved]);
+  }, [gameOver, api, rotation]);
 
   return (
     <>

@@ -1,4 +1,4 @@
-import {useEffect} from 'react'
+// import {useEffect} from 'react'
 import { useBox } from "@react-three/cannon";
 import * as THREE from "three";
 
@@ -8,7 +8,7 @@ type Animal = {
 }
 
 export default function Animal({animal}: {animal: Animal}) {
-    const [ref, api] = useBox<THREE.Mesh>(() => {
+    const [ref] = useBox<THREE.Mesh>(() => {
         return {
             mass: 2,
             position: animal.position,
@@ -21,11 +21,11 @@ export default function Animal({animal}: {animal: Animal}) {
         }
     });
 
-    useEffect(() => {
-        const unsubscribe = api.position.subscribe((pos) => {});
+    // useEffect(() => {
+    //     const unsubscribe = api.position.subscribe((_) => {});
 
-        return () => unsubscribe(); // ✅ 移除訂閱，避免 memory leak
-    }, []);
+    //     return () => unsubscribe(); // ✅ 移除訂閱，避免 memory leak
+    // }, [api.position]);
 
     return (
         <mesh ref={ref} castShadow receiveShadow>
