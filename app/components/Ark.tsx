@@ -1,17 +1,19 @@
 import { useState, useEffect } from "react";
 import { useBox, useHingeConstraint } from "@react-three/cannon";
 import * as THREE from "three";
+import { useLoader } from "@react-three/fiber";
+import { TextureLoader } from "three";
 
-export default function Ark(
-  {
-    setGameOver, 
-    gameOver
-  }: {
-    setGameOver: (value: boolean) => void; 
-    gameOver: boolean;
-  }
-) {
+import WavesSupport from "./WavesSupport";
+
+type Props = {
+  setIsGameOver: (value: boolean) => void; 
+  isGameOver: boolean;
+}
+
+export default function Ark({setIsGameOver, isGameOver}: Props) {
   const [rotation, setRotation] = useState<[number, number, number]>([0, 0, 0]);
+  const woodTexture = useLoader(TextureLoader, "/textures/wood.jpg"); // ✅ 替換成你的木紋貼圖
 
   const [ref, api] = useBox<THREE.Mesh>(() => ({
     mass: 0.1, // ✅ 提高質量，讓方舟更穩定
@@ -68,30 +70,27 @@ export default function Ark(
 
       // 如果傾斜超過 30°，遊戲結束
       if (Math.abs(xRotation) > 20 || Math.abs(zRotation) > 20) {
-        setGameOver(true);
+        setIsGameOver(true);
       }
     });
 
     return () => unsubscribe();
-  }, [api.quaternion, setGameOver]);
+  }, [api.quaternion, setIsGameOver]);
 
   // 當動物被移除時，給方舟一個「回正的力」
   useEffect(() => {
-    if (gameOver) {
+    if (isGameOver) {
       api.applyTorque([rotation[0] * -0.2, 0, rotation[1] * -0.2]); // 給予回正的扭力
     }
-  }, [gameOver, api, rotation]);
+  }, [isGameOver, api, rotation]);
 
   return (
     <>
       <mesh ref={ref} castShadow receiveShadow>
         <boxGeometry args={[4, 0.5, 2]} />
-        <meshStandardMaterial color="white" />
+        <meshStandardMaterial map={woodTexture} />
       </mesh>
-      <mesh ref={supportRef} castShadow receiveShadow>
-        <boxGeometry args={[0.25, 0.6, 0.125]} />
-        <meshStandardMaterial color="gray" />
-      </mesh>
+      <WavesSupport />
     </>
   );
 }

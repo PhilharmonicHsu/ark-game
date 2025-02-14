@@ -1,24 +1,30 @@
 import {useEffect} from 'react'
 import { useBox } from "@react-three/cannon";
 import * as THREE from "three";
+import { useLoader } from "@react-three/fiber";
+import { TextureLoader } from "three";
+import { AnimalConfig } from '@/app/constants/animalConfig';
 
 type Animal = { 
     id: number;
     position: [number, number, number];
+    config: AnimalConfig
 }
 
-export default function Animal(
+export default function Zebra(
     {animal, setAnimals}: 
     {   
         animal: Animal; 
         setAnimals: React.Dispatch<React.SetStateAction<Animal[]>>;
     }
 ) {
+    const texture = useLoader(TextureLoader, `/textures/${animal.config.textureFile}`)
+
     const [ref, api] = useBox<THREE.Mesh>(() => {
         return {
-            mass: 1000,
+            mass: animal.config.mass,
             position: animal.position,
-            args: [0.25, 0.25, 0.25], // 動物大小
+            args: animal.config.size, // 動物大小
             material: "animalMaterial", // ✅ 設定動物的摩擦材質
             angularDamping: 0.9, // ✅ 降低滾動
             linearDamping: 0.99, // ✅ 讓動物更不容易滑動
@@ -46,8 +52,11 @@ export default function Animal(
 
     return (
         <mesh ref={ref} castShadow receiveShadow>
-            <boxGeometry args={[0.25, 0.25, 0.25]} />
-            <meshStandardMaterial color="orange" />
+            <boxGeometry args={animal.config.size} />
+            <meshStandardMaterial 
+                map={texture} 
+                // color="oranger"
+            />
         </mesh>
     );
 }

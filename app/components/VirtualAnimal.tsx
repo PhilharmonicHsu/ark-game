@@ -1,8 +1,14 @@
+import {AnimalConfig} from 'app/constants/animalConfig'
 
-export default function VirtualAnimal({ position }: { position: [number, number, number];}) {
+type Props = {
+    position: [number, number, number];
+    animalConfig: AnimalConfig
+}
+
+export default function VirtualAnimal({ position, animalConfig }: Props) {
     return (
         <mesh position={position}>
-            <boxGeometry args={[0.25, 0.25, 0.25]} />
+            <boxGeometry args={animalConfig.size} />
             <meshStandardMaterial color="gray" opacity={0.5} transparent /> {/* ✅ 半透明，代表虛擬動物 */}
         </mesh>
     );

@@ -12,6 +12,9 @@ const config: Config = {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      fontFamily: {
+        pixel: ['"Press Start 2P"', 'cursive'], // ✅ 自訂字型
+      },
     },
   },
   plugins: [],
