@@ -11,6 +11,8 @@ import ArrayKey from '@components/elements/ArrowKey';
 import GameOver from './Gameover';
 import Zebra from './animals/Zebra';
 import {AnimalConfig, getRandomAnimalConfig } from 'app/constants/animalConfig'
+import useOrientationWarning from "../hooks/useOrientationWarning";
+
 
 type Animal = { 
   id: number;
@@ -27,6 +29,7 @@ export default function Game() {
     const [isGameOver, setIsGameOver] = useState<boolean>(false)
     const [virtualAnimalPosition, setVirtualAnimalPosition] = useState<[number, number, number] | null>(null);
     const [showVirtualAnimal, setShowVirtualAnimal] = useState(false);
+    const { showWarning, setShowWarning } = useOrientationWarning();
 
     // 產生虛擬動物
     const spawnVirtualAnimal = () => {
@@ -77,6 +80,20 @@ export default function Game() {
 
     return (
         <>
+          {showWarning && (
+                <div className="font-pixel fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 z-50">
+                    <div className="bg-white p-6 rounded-lg shadow-lg text-center">
+                        <h2 className="text-xl font-bold text-red-500">Please rotate your device</h2>
+                        <p className="text-gray-600">Please use landscape mode to play the game!</p>
+                        <button 
+                            onClick={() => setShowWarning(false)} 
+                            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                        >
+                            Got it
+                        </button>
+                    </div>
+                </div>
+            )}
             <Canvas shadows 
               camera={{ position: [0, 5, 5], fov: 50 }}
               style={{ background: "linear-gradient(to bottom, #87CEEB, #4682B4)" }} 
