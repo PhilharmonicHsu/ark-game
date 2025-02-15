@@ -35,10 +35,12 @@ export type AnimalConfig = {
 export type AnimalTypes = 'elephant' | 'giraffe' | 'horse' | 'tiger' | 'zebra';
 
 export const getRandomAnimalConfig = (): AnimalConfig => {
-    const animals: AnimalTypes[] = ['elephant', 'giraffe', 'horse', 'tiger', 'zebra']
+    // const animals: AnimalTypes[] = ['elephant', 'giraffe', 'horse', 'tiger', 'zebra']
 
-    const animalType = animals[Math.floor(Math.random() * animals.length)];
+    // const animalType = animals[Math.floor(Math.random() * animals.length)];
 
-    return AnimalConfigs[animalType]
+    // return AnimalConfigs[animalType]
+
+    return AnimalConfigs.zebra;
 }
 

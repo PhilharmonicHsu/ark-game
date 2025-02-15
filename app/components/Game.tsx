@@ -9,10 +9,9 @@ import Animal from '@components/Animal'
 import VirtualAnimal from "@components/VirtualAnimal"; 
 import ArrayKey from '@components/elements/ArrowKey';
 import GameOver from './Gameover';
-import Zebra from './animals/Zebra';
+import ModelAnimal from './animals/ModelAnimal';
 import {AnimalConfig, getRandomAnimalConfig } from 'app/constants/animalConfig'
 import useOrientationWarning from "../hooks/useOrientationWarning";
-
 
 type Animal = { 
   id: number;
@@ -58,14 +57,14 @@ export default function Game() {
 
     useEffect(() => {
       animalsRef.current = animals; // ✅ 每當 animals 變化時，更新 ref
-  }, [animals]); // ✅ 這個 useEffect 只更新 ref，不會重新觸發 interval
+    }, [animals]); // ✅ 這個 useEffect 只更新 ref，不會重新觸發 interval
 
     // ✅ 定期檢查動物是否掉出方舟
     useEffect(() => {
       const interval = setInterval(() => {
           for (const animal of animalsRef.current) {
               const [x, y, z] = animal.position;
-              console.log([x, y, z])
+
               // ✅ 判斷是否超出方舟範圍
               if (x < -2 || x > 2 || z < -1 || z > 1 || y < -1) {
                   setIsGameOver(true);
@@ -115,7 +114,7 @@ export default function Game() {
                   />
                   {animals.map((animal, index) => (
                     <Suspense key={index}>
-                      <Zebra
+                      <ModelAnimal
                         key={index}
                         animal={animal}
                         setAnimals={setAnimals}
@@ -132,7 +131,7 @@ export default function Game() {
                 />
               )}
             </Canvas>
-            <div className="absolute bottom-10 right-10 transform -translate-x-1/2 flex flex-col gap-2">
+            <div className="absolute bottom-10 right-10 transform flex flex-col gap-2">
               <div className="flex justify-center items-center">
                 <ArrayKey arrow="up" setVirtualAnimalPosition={setVirtualAnimalPosition} />
               </div>
