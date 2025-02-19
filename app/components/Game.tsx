@@ -14,53 +14,49 @@ import useOrientationWarning from "@hooks/useOrientationWarning";
 import { Group, Object3DEventMap } from 'three'
 import { Animal } from '@/app/types/common'
 
+type SceneMapping = Record<string, Group<Object3DEventMap>>;
+
 const animalConfig: ModelConfig = getRandomAnimalConfig();
 
-const getSceneByConfig = ({
-  animalConfig,
-  cowScene, 
-  deerScene,
-  eleScene,
-  goatScene,
-  lionScene,
-  wolfScene
-}: {
-  animalConfig: ModelConfig
-  cowScene: Group<Object3DEventMap>
-  deerScene: Group<Object3DEventMap>
-  eleScene: Group<Object3DEventMap>
-  goatScene: Group<Object3DEventMap>
-  lionScene: Group<Object3DEventMap>
-  wolfScene: Group<Object3DEventMap>
-}): Group<Object3DEventMap> => {
-  switch (animalConfig.filePath) {
-    case 'cow': return cowScene;
-    case 'deer': return deerScene;
-    case 'ele': return eleScene;
-    case 'goat': return goatScene;
-    case 'lion': return lionScene;
-    default: return wolfScene;
-  }
+const getSceneByConfig = (
+  animalConfig: ModelConfig,
+  scenes: SceneMapping
+): Group<Object3DEventMap> => {
+  return scenes[animalConfig.filePath] || scenes.default;
 }
 
 export default function Game() {
-    const [animals, setAnimals] = useState<Animal[]>([]);
-    const animalsRef = useRef(animals);
     const orbitControlsRef = useRef(null);
     const animalConfigRef = useRef(animalConfig); 
-    const [isGameOver, setIsGameOver] = useState<boolean>(false)
+
+    const [isGameOver, setIsGameOver] = useState<boolean>(false)  
+    const [animals, setAnimals] = useState<Animal[]>([]);
+    const animalsRef = useRef(animals);
+    
     const [virtualAnimalPosition, setVirtualAnimalPosition] = useState<[number, number, number] | null>(null);
     const [showVirtualAnimal, setShowVirtualAnimal] = useState(false);
     const { showWarning, setShowWarning } = useOrientationWarning();
 
-    const { scene: virtualAnimalScene } = useGLTF(`/models/${animalConfigRef.current.filePath}.glb`);
+    const { scene: cowScene } = useGLTF('/models/cow.glb');
+    const { scene: deerScene } = useGLTF('/models/deer.glb');
+    const { scene: eleScene } = useGLTF('/models/ele.glb');
+    const { scene: goatScene } = useGLTF('/models/goat.glb');
+    const { scene: lionScene } = useGLTF('/models/lion.glb');
+    const { scene: wolfScene } = useGLTF('/models/wolf.glb');
 
-    const { scene: cowScene } = useGLTF(`/models/cow.glb`);
-    const { scene: deerScene } = useGLTF(`/models/deer.glb`);
-    const { scene: eleScene } = useGLTF(`/models/ele.glb`);
-    const { scene: goatScene } = useGLTF(`/models/goat.glb`);
-    const { scene: lionScene } = useGLTF(`/models/lion.glb`);
-    const { scene: wolfScene } = useGLTF(`/models/wolf.glb`);
+    const sceneMapping: SceneMapping = {
+      cow: cowScene,
+      deer: deerScene,
+      ele: eleScene,
+      goat: goatScene,
+      lion: lionScene,
+      default: wolfScene, // 預設場景
+    };
+
+    const virtualAnimalScene: Group<Object3DEventMap> = getSceneByConfig(
+      animalConfigRef.current,
+      sceneMapping
+    );
 
     // show virtual animal
     const awakeVirtualAnimal = () => {
@@ -73,16 +69,11 @@ export default function Game() {
     const placeAnimal = () => {
       if (!virtualAnimalPosition) return;
   
-      let scene: Group<Object3DEventMap> = getSceneByConfig({
-        animalConfig: animalConfigRef.current,
-        cowScene,
-        deerScene,
-        eleScene,
-        goatScene,
-        lionScene,
-        wolfScene
-      })
-      
+      const scene: Group<Object3DEventMap> = getSceneByConfig(
+        animalConfigRef.current,
+        sceneMapping
+      )
+
       const newAnimal: Animal = { id: animals.length, position: virtualAnimalPosition, config: animalConfigRef.current, scene};
 
       setAnimals([...animals, newAnimal]);

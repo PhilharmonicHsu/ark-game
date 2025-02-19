@@ -2,11 +2,10 @@ import { useEffect } from "react";
 import { useBox, useHingeConstraint } from "@react-three/cannon";
 import * as THREE from "three";
 import { useLoader } from "@react-three/fiber";
-import { TextureLoader } from "three";
 import WavesSupport from "@components/WavesSupport";
 
 export default function Ark() {
-  const woodTexture = useLoader(TextureLoader, "/textures/wood.jpg");
+  const woodTexture = useLoader(THREE.TextureLoader, "/textures/wood.jpg");
 
   const [ref, api] = useBox<THREE.Mesh>(() => ({
     mass: 0.1,

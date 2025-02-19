@@ -16,7 +16,7 @@ export const modelConfigs = {
     },
     ele: {
         filePath: 'ele',
-        mass: 110
+        mass: 60
     },
     goat: {
         filePath: 'goat',
