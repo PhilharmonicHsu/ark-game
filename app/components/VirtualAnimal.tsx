@@ -7,7 +7,7 @@ type Props = {
 }
 
 export default function VirtualAnimal({ position, scene }: Props) {
-    const clonedScene = useMemo(() => scene.clone(), [scene]); // ✅ 確保每個 ModelAnimal 都有獨立的模型
+    const clonedScene = useMemo(() => scene.clone(), [scene]);
 
     // useEffect(() => {
     //     clonedScene.traverse((node: THREE.Object3D) => {

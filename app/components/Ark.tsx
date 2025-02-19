@@ -1,28 +1,21 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useBox, useHingeConstraint } from "@react-three/cannon";
 import * as THREE from "three";
 import { useLoader } from "@react-three/fiber";
 import { TextureLoader } from "three";
+import WavesSupport from "@components/WavesSupport";
 
-import WavesSupport from "./WavesSupport";
-
-type Props = {
-  setIsGameOver: (value: boolean) => void; 
-  isGameOver: boolean;
-}
-
-export default function Ark({setIsGameOver, isGameOver}: Props) {
-  const [rotation, setRotation] = useState<[number, number, number]>([0, 0, 0]);
-  const woodTexture = useLoader(TextureLoader, "/textures/wood.jpg"); // ✅ 替換成你的木紋貼圖
+export default function Ark() {
+  const woodTexture = useLoader(TextureLoader, "/textures/wood.jpg");
 
   const [ref, api] = useBox<THREE.Mesh>(() => ({
-    mass: 0.1, // ✅ 提高質量，讓方舟更穩定
+    mass: 0.1,
     position: [0, 0.4, 0],
-    args: [4, 0.5, 2], // 方舟大小
-    linearDamping: 0.9,    // 嘗試調高阻尼值
+    args: [4, 0.5, 2], // size of ark 
+    linearDamping: 0.9,
     angularDamping: 0.9,
-    centerOfMass: [0, 100, 0], // ✅ 讓重心更低
-    material: "arkMaterial", // ✅ 設定方舟的摩擦材質
+    centerOfMass: [0, 100, 0], // make the center of gravity lower
+    material: "arkMaterial", // setting ark friction material
   }));
 
   useEffect(() => {
@@ -34,55 +27,27 @@ export default function Ark({setIsGameOver, isGameOver}: Props) {
 
   const [supportRef] = useBox<THREE.Mesh>(() => ({
     type: "Static",
-    position: [0, -0.4, 0], // ✅ 提高支架，讓方舟更穩定
-    args: [0.25, 0.5, 0.125], // ✅ 增加支架的大小
+    position: [0, -0.4, 0], // support position
+    args: [0.25, 0.5, 0.125], // size of support 
   }))
 
   useEffect(() => {
-    // ✅ 確保方舟在初始化時角度為 0
     api.rotation.set(0, 0, 0);
   }, [api.rotation]);
 
-  // 讓方舟與支架形成晃動的連結
   useHingeConstraint(ref, supportRef, {
     pivotA: [0, -0.2, 0],
     pivotB: [0, 0.2, 0],
-    axisA: [1, 0, 0], // 讓它可以左右搖晃
+    axisA: [1, 0, 0],
     axisB: [1, 0, 0],
   });
 
   useHingeConstraint(ref, supportRef, {
     pivotA: [0, -0.2, 0],
     pivotB: [0, 0.2, 0],
-    axisA: [0, 0, 1], // 讓它可以左右搖晃
+    axisA: [0, 0, 1],
     axisB: [0, 0, 1],
   });
-
-  // 監測方舟的旋轉角度，判定遊戲是否結束
-  // 使用 API 來監聽 quaternion 變化
-  useEffect(() => {
-    const unsubscribe = api.quaternion.subscribe((q) => {
-      const euler = new THREE.Euler().setFromQuaternion(new THREE.Quaternion(q[0], q[1], q[2], q[3]), "XYZ");
-      const xRotation = THREE.MathUtils.radToDeg(euler.x);
-      const zRotation = THREE.MathUtils.radToDeg(euler.z);
-
-      setRotation([xRotation, zRotation, 0]);
-
-      // 如果傾斜超過 30°，遊戲結束
-      if (Math.abs(xRotation) > 20 || Math.abs(zRotation) > 20) {
-        setIsGameOver(true);
-      }
-    });
-
-    return () => unsubscribe();
-  }, [api.quaternion, setIsGameOver]);
-
-  // 當動物被移除時，給方舟一個「回正的力」
-  useEffect(() => {
-    if (isGameOver) {
-      api.applyTorque([rotation[0] * -0.2, 0, rotation[1] * -0.2]); // 給予回正的扭力
-    }
-  }, [isGameOver, api, rotation]);
 
   return (
     <>

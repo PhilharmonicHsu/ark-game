@@ -1,35 +1,35 @@
-export const modelConfigs = {
-    cow: {
-        filePath: 'cow',
-        mass: 8
-    },
-    deer: {
-        filePath: 'deer',
-        mass: 8
-    },
-    ele: {
-        filePath: 'ele',
-        mass: 8
-    },
-    goat: {
-        filePath: 'goat',
-        mass: 8
-    },
-    lion: {
-        filePath: 'lion',
-        mass: 8
-    },
-    wolf: {
-        filePath: 'wolf',
-        mass: 8
-    },
-}
-
 export type ModelTypes = 'cow' | 'deer' | 'ele' | 'goat' | 'lion' | 'wolf' ; 
 
 export type ModelConfig = {
     filePath: string;
     mass: number;
+}
+
+export const modelConfigs = {
+    cow: {
+        filePath: 'cow',
+        mass: 30
+    },
+    deer: {
+        filePath: 'deer',
+        mass: 15
+    },
+    ele: {
+        filePath: 'ele',
+        mass: 110
+    },
+    goat: {
+        filePath: 'goat',
+        mass: 3
+    },
+    lion: {
+        filePath: 'lion',
+        mass: 10
+    },
+    wolf: {
+        filePath: 'wolf',
+        mass: 3
+    },
 }
 
 export const getRandomAnimalConfig = (): ModelConfig => {

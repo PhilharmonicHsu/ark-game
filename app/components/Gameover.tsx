@@ -8,13 +8,11 @@ export default function GameOver({ onRestart }: { onRestart: () => void }) {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
         >
-            {/* 跳動動畫 */}
             <motion.div 
                 className="bg-gradient-to-br from-[#1E1F2F] to-[#282A3A] text-white p-8 rounded-lg shadow-2xl flex flex-col items-center border border-[#7D7DFF] backdrop-blur-md"
                 animate={{ y: [0, -10, 0] }} 
                 transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
             >
-                {/* 逐漸出現的 "Game Over!" */}
                 <motion.h1 
                     className="font-pixel text-6xl font-bold uppercase text-[#D47DFF] drop-shadow-lg"
                     initial={{ opacity: 0, scale: 0.5 }}
@@ -30,7 +28,6 @@ export default function GameOver({ onRestart }: { onRestart: () => void }) {
                     Some animals fell out of the ark!
                 </p>
 
-                {/* 重啟遊戲按鈕 */}
                 <button 
                     onClick={onRestart}
                     className="font-pixel text-xl mt-5 bg-[#4F7DFF] hover:bg-[#6B9DFF] text-white font-bold py-2 px-6 rounded-md shadow-md transition-all duration-200"

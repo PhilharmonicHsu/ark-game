@@ -1,15 +1,7 @@
 import {useEffect, useRef, useMemo} from 'react'
 import { useBox } from "@react-three/cannon";
 import * as THREE from "three";
-import { ModelConfig } from '@/app/constants/animalConfig';
-import { Group, Object3DEventMap } from 'three'
-
-type Animal = { 
-    id: number;
-    position: [number, number, number];
-    config: ModelConfig,
-    scene: Group<Object3DEventMap>,
-}
+import { Animal } from '@/app/types/common';
 
 type Props = {
     animal: Animal; 
@@ -20,18 +12,18 @@ export default function ModelAnimal (
     {animal, setAnimals}: Props
 ) {
     const scene = animal.scene;
-    const clonedScene = useMemo(() => scene.clone(), [scene]); // ✅ 確保每個 ModelAnimal 都有獨立的模型
+    const clonedScene = useMemo(() => scene.clone(), [scene]);
     const modelRef = useRef(null);
 
     const [ref, api] = useBox<THREE.Group>(() => {
         return {
             mass: animal.config.mass,
             position: animal.position,
-            args: [0.3, 0.9, 0.5],
-            material: "animalMaterial", // ✅ 設定動物的摩擦材質
-            angularDamping: 0.9, // ✅ 降低滾動
-            linearDamping: 0.99, // ✅ 讓動物更不容易滑動
-            allowSleep: false, // 防止物體卡住
+            args: [0.3, 0.9, 0.5],  // animal size
+            material: "animalMaterial", // friction material
+            angularDamping: 0.9, // reduce scrolling
+            linearDamping: 0.99, // make it harder for animals to slide
+            allowSleep: false, // Prevent objects from getting stuck
         }
     });
 

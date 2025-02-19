@@ -31,14 +31,15 @@ const rightIcon: React.ReactNode = <svg width="40" height="40" className="rotate
     <path d="M2.32953 14.0835H17.6705L10 3.9165L2.32953 14.0835Z" fill="white"/>
 </svg>
 
+const DISTANCE: number = 0.2;
 
 export default function ArrayKey({arrow, setVirtualAnimalPosition}: Props) {
     const classes = "w-12 h-12 flex justify-center items-center text-2xl bg-gray-800 text-white rounded-lg p-2 active:bg-gray-600";
     const directionMap: DirectionMap = {
-        up: { icon: upIcon, move: (prev) => prev ? [prev[0], prev[1], prev[2] - 0.2] : prev },
-        down: { icon: downIcon, move: (prev) => prev ? [prev[0], prev[1], prev[2] + 0.2] : prev },
-        left: { icon: leftIcon, move: (prev) => prev ? [prev[0] - 0.2, prev[1], prev[2]] : prev },
-        right: { icon: rightIcon, move: (prev) => prev ? [prev[0] + 0.2, prev[1], prev[2]] : prev },
+        up: { icon: upIcon, move: (prev) => prev ? [prev[0], prev[1], prev[2] - DISTANCE] : prev },
+        down: { icon: downIcon, move: (prev) => prev ? [prev[0], prev[1], prev[2] + DISTANCE] : prev },
+        left: { icon: leftIcon, move: (prev) => prev ? [prev[0] - DISTANCE, prev[1], prev[2]] : prev },
+        right: { icon: rightIcon, move: (prev) => prev ? [prev[0] + DISTANCE, prev[1], prev[2]] : prev },
     };
 
     return <button 
