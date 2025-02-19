@@ -1,13 +1,14 @@
 import {useEffect, useRef, useMemo} from 'react'
 import { useBox } from "@react-three/cannon";
 import * as THREE from "three";
-import { AnimalConfig } from '@/app/constants/animalConfig';
-import { useGLTF } from "@react-three/drei";
+import { ModelConfig } from '@/app/constants/animalConfig';
+import { Group, Object3DEventMap } from 'three'
 
 type Animal = { 
     id: number;
     position: [number, number, number];
-    config: AnimalConfig
+    config: ModelConfig,
+    scene: Group<Object3DEventMap>,
 }
 
 type Props = {
@@ -18,7 +19,7 @@ type Props = {
 export default function ModelAnimal (
     {animal, setAnimals}: Props
 ) {
-    const { scene } = useGLTF("/models/animal2.glb");
+    const scene = animal.scene;
     const clonedScene = useMemo(() => scene.clone(), [scene]); // ✅ 確保每個 ModelAnimal 都有獨立的模型
     const modelRef = useRef(null);
 
@@ -31,7 +32,6 @@ export default function ModelAnimal (
             angularDamping: 0.9, // ✅ 降低滾動
             linearDamping: 0.99, // ✅ 讓動物更不容易滑動
             allowSleep: false, // 防止物體卡住
-            rotation: [- Math.PI /2, 0, 0],
         }
     });
 
@@ -53,7 +53,7 @@ export default function ModelAnimal (
         return () => unsubscribe();
     }, [api.position, animal.id, setAnimals]);
 
-    return <group ref={modelRef} position={[0, -0.25, 0]}>
-        <primitive ref={ref}  object={clonedScene} scale={0.003} />
+    return <group ref={modelRef} position={[0, -0.45, 0]}>
+        <primitive ref={ref}  object={clonedScene} scale={0.2} />
     </group>
 }

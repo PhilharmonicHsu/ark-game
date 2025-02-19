@@ -1,46 +1,42 @@
-export const AnimalConfigs: Record<AnimalTypes, AnimalConfig> = {
-    elephant: {
-        textureFile: 'elephant.jpg',
-        size: [0.75, 0.75, 0.75],
-        mass: 100
-    },
-    giraffe: {
-        textureFile: 'giraffe.jpg',
-        size: [0.5, 0.5, 0.5],
-        mass: 30
-    },
-    horse: {
-        textureFile: 'horse.jpg',
-        size: [0.25, 0.25, 0.25],
-        mass: 20
-    },
-    tiger: {
-        textureFile: 'tiger.jpg',
-        size: [0.25, 0.25, 0.25],
+export const modelConfigs = {
+    cow: {
+        filePath: 'cow',
         mass: 8
     },
-    zebra: {
-        textureFile: 'zebra.jpg',
-        size: [0.25, 0.25, 0.25],
-        mass: 10
+    deer: {
+        filePath: 'deer',
+        mass: 8
+    },
+    ele: {
+        filePath: 'ele',
+        mass: 8
+    },
+    goat: {
+        filePath: 'goat',
+        mass: 8
+    },
+    lion: {
+        filePath: 'lion',
+        mass: 8
+    },
+    wolf: {
+        filePath: 'wolf',
+        mass: 8
     },
 }
 
-export type AnimalConfig = {
-    textureFile: string,
-    size: [x: number, y: number, z: number],
-    mass: number
+export type ModelTypes = 'cow' | 'deer' | 'ele' | 'goat' | 'lion' | 'wolf' ; 
+
+export type ModelConfig = {
+    filePath: string;
+    mass: number;
 }
 
-export type AnimalTypes = 'elephant' | 'giraffe' | 'horse' | 'tiger' | 'zebra';
+export const getRandomAnimalConfig = (): ModelConfig => {
+    const animals: ModelTypes[] = ['cow', 'deer', 'ele', 'goat', 'lion', 'wolf']
 
-export const getRandomAnimalConfig = (): AnimalConfig => {
-    // const animals: AnimalTypes[] = ['elephant', 'giraffe', 'horse', 'tiger', 'zebra']
+    const animalType = animals[Math.floor(Math.random() * animals.length)];
 
-    // const animalType = animals[Math.floor(Math.random() * animals.length)];
-
-    // return AnimalConfigs[animalType]
-
-    return AnimalConfigs.zebra;
+    return modelConfigs[animalType]
 }
 

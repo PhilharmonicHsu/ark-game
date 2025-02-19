@@ -10,25 +10,38 @@ import VirtualAnimal from "@components/VirtualAnimal";
 import ArrayKey from '@components/elements/ArrowKey';
 import GameOver from './Gameover';
 import ModelAnimal from './animals/ModelAnimal';
-import {AnimalConfig, getRandomAnimalConfig } from 'app/constants/animalConfig'
+import {ModelConfig, getRandomAnimalConfig } from 'app/constants/animalConfig'
 import useOrientationWarning from "../hooks/useOrientationWarning";
+import { useGLTF } from "@react-three/drei";
+import { Group, Object3DEventMap } from 'three'
 
 type Animal = { 
   id: number;
   position: [number, number, number];
-  config: AnimalConfig
+  config: ModelConfig,
+  scene: Group<Object3DEventMap>
 }
 
-let animalConfig: AnimalConfig = getRandomAnimalConfig();
+const animalConfig: ModelConfig = getRandomAnimalConfig();
 
 export default function Game() {
     const [animals, setAnimals] = useState<Animal[]>([]);
     const animalsRef = useRef(animals); // ✅ 使用 ref 來追蹤最新的 animals 陣列
     const orbitControlsRef = useRef(null);
+    const animalConfigRef = useRef(animalConfig); 
     const [isGameOver, setIsGameOver] = useState<boolean>(false)
     const [virtualAnimalPosition, setVirtualAnimalPosition] = useState<[number, number, number] | null>(null);
     const [showVirtualAnimal, setShowVirtualAnimal] = useState(false);
     const { showWarning, setShowWarning } = useOrientationWarning();
+
+    const { scene: virtualAnimalScene } = useGLTF(`/models/${animalConfigRef.current.filePath}.glb`);
+
+    const { scene: cowScene } = useGLTF(`/models/cow.glb`);
+    const { scene: deerScene } = useGLTF(`/models/deer.glb`);
+    const { scene: eleScene } = useGLTF(`/models/ele.glb`);
+    const { scene: goatScene } = useGLTF(`/models/goat.glb`);
+    const { scene: lionScene } = useGLTF(`/models/lion.glb`);
+    const { scene: wolfScene } = useGLTF(`/models/wolf.glb`);
 
     // 產生虛擬動物
     const spawnVirtualAnimal = () => {
@@ -40,13 +53,35 @@ export default function Game() {
 
     const placeAnimal = () => {
       if (!virtualAnimalPosition) return;
+  
+      let scene: Group<Object3DEventMap>;
 
-      const newAnimal: Animal = { id: animals.length, position: virtualAnimalPosition, config: animalConfig};
+      switch (animalConfigRef.current.filePath) {
+        case 'cow': 
+          scene = cowScene;
+          break;
+        case 'deer':
+          scene = deerScene;
+          break;
+        case 'ele':
+          scene = eleScene;
+          break;
+        case 'goat':
+          scene = goatScene;
+          break;
+        case 'lion':
+          scene = lionScene;
+          break;
+        default:
+          scene = wolfScene;
+      }
+
+      const newAnimal: Animal = { id: animals.length, position: virtualAnimalPosition, config: animalConfigRef.current, scene};
 
       setAnimals([...animals, newAnimal]);
       setShowVirtualAnimal(false);
       setVirtualAnimalPosition(null);
-      animalConfig = getRandomAnimalConfig();
+      animalConfigRef.current = getRandomAnimalConfig();
     }
 
     const onRestart = () => {
@@ -116,18 +151,19 @@ export default function Game() {
                     <Suspense key={index}>
                       <ModelAnimal
                         key={index}
+                        // scene={scene}
                         animal={animal}
                         setAnimals={setAnimals}
                       />
                     </Suspense>
                   ))}
-                  {/* ✅ 只在 `showVirtualAnimal` 為 true 時顯示虛擬動物 */}
-                
               </Physics>
+              {/* ✅ 只在 `showVirtualAnimal` 為 true 時顯示虛擬動物 */}
               {showVirtualAnimal && virtualAnimalPosition && (
                 <VirtualAnimal 
+                  // scene={scene}
                   position={virtualAnimalPosition}
-                  animalConfig={animalConfig}  
+                  scene={virtualAnimalScene}
                 />
               )}
             </Canvas>

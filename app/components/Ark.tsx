@@ -34,7 +34,7 @@ export default function Ark({setIsGameOver, isGameOver}: Props) {
 
   const [supportRef] = useBox<THREE.Mesh>(() => ({
     type: "Static",
-    position: [0, 0.4, 0], // ✅ 提高支架，讓方舟更穩定
+    position: [0, -0.4, 0], // ✅ 提高支架，讓方舟更穩定
     args: [0.25, 0.5, 0.125], // ✅ 增加支架的大小
   }))
 
