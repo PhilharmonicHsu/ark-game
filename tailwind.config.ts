@@ -13,7 +13,7 @@ const config: Config = {
         foreground: "var(--foreground)",
       },
       fontFamily: {
-        pixel: ['"Press Start 2P"', 'cursive'], // ✅ 自訂字型
+        pixel: ['"Courier New"', '"Lucida Console"', 'monospace'], // ✅ 自訂字型
       },
     },
   },
